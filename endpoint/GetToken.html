@@ -21,9 +21,9 @@
 
             function httpGet(theUrl) {
                 var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
                 xmlHttp.setRequestHeader('Access-Control-Allow-Headers', '*');
                 xmlHttp.setRequestHeader('Access-Control-Allow-Origin', '*');
-                xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
                 xmlHttp.send( null );
                 return xmlHttp.responseText;
             }
