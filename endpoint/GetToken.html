@@ -4,24 +4,54 @@
     </head>
     <body>
         <script type="text/javascript">
-            $(document).ready(function() {
-                var getUrlParameter = function getUrlParameter(sParam) {
-                    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-                        sURLVariables = sPageURL.split('&'),
-                        sParameterName,
-                        i;
+            var getUrlParameter = function getUrlParameter(sParam) {
+                var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                    sURLVariables = sPageURL.split('&'),
+                    sParameterName,
+                    i;
 
-                    for (i = 0; i < sURLVariables.length; i++) {
-                        sParameterName = sURLVariables[i].split('=');
+                for (i = 0; i < sURLVariables.length; i++) {
+                    sParameterName = sURLVariables[i].split('=');
 
-                        if (sParameterName[0] === sParam) {
-                            return sParameterName[1] === undefined ? true : sParameterName[1];
-                        }
+                    if (sParameterName[0] === sParam) {
+                        return sParameterName[1] === undefined ? true : sParameterName[1];
                     }
-                };
+                }
+            };
 
-                var appID = getUrlParameter('appID');
-                console.log(appID);
+            function httpGet(theUrl) {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+                xmlHttp.send( null );
+                return xmlHttp.responseText;
+            }
+
+            function httpGetAsync(theUrl, callback) {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function() { 
+                    if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                        callback(xmlHttp.responseText);
+                }
+                xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+                xmlHttp.send(null);
+            }
+
+            $(document).ready(function() {
+                var callback = "https://MusicShare.github.io/endpoint/DisplayToken/";
+
+                try {
+                    var appID = getUrlParameter('appID');
+                } catch(err) {}
+
+                try {
+                    var state = getUrlParameter('state');
+                } catch(err) {}
+
+                if (appID !== null && callback !== null && state !== null) {
+                    var url = 'https://www.facebook.com/v2.11/dialog/oauth?client_id='+appID+'&redirect_uri='+callback+'&state='+state;
+
+                    httpGet(url);
+                }
             });
         </script>
     </body>
